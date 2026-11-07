@@ -1,0 +1,26 @@
+#include "../eyelash_sofle/eyelash_sofle-logical.dtsi"
+
+/ {
+    chosen {
+        zmk,physical-layout = &eyelash_sofle_layout;
+        zmk,kscan = &dongle_kscan;
+    };
+
+    dongle_kscan: dongle_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <1>;
+        rows = <0>;
+        events = <>;
+    };
+
+    remote_encoder: remote_encoder {
+        compatible = "alps,ec11";
+        status = "disabled";
+    };
+
+    sensors {
+        compatible = "zmk,keymap-sensors";
+        triggers-per-rotation = <20>;
+        sensors = <&remote_encoder>;
+    };
+};

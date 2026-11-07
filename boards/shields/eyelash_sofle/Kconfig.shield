@@ -6,3 +6,9 @@ config SHIELD_EYELASH_SOFLE_LEFT
 
 config SHIELD_EYELASH_SOFLE_RIGHT
     def_bool $(shields_list_contains,eyelash_sofle_right)
+
+config SHIELD_EYELASH_SOFLE_DONGLE_LEFT
+    def_bool $(shields_list_contains,eyelash_sofle_dongle_left)
+
+config SHIELD_EYELASH_SOFLE_DONGLE_RIGHT
+    def_bool $(shields_list_contains,eyelash_sofle_dongle_right)

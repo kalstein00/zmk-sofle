@@ -1,0 +1,2 @@
+#define SOFLE_DONGLE
+#include "eyelash_sofle.keymap"

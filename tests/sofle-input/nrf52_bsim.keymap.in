@@ -1,0 +1,8 @@
+#include "@REPO@/boards/shields/eyelash_sofle/eyelash_sofle-logical.dtsi"
+#include "@REPO@/config/sofle_dongle.keymap"
+/ {
+    chosen { zmk,physical-layout = &eyelash_sofle_layout; };
+    remote_encoder: remote_encoder { compatible = "alps,ec11"; status = "disabled"; };
+    sensors { compatible = "zmk,keymap-sensors"; triggers-per-rotation = <20>; sensors = <&remote_encoder>; };
+};
+&kscan { rows = <5>; columns = <14>; /delete-property/ exit-after; events = <>; };

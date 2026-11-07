@@ -11,6 +11,22 @@
 #include <dt-bindings/zmk/pointing.h>
 #include <dt-bindings/zmk/rgb.h>
 
+#ifdef SOFLE_DONGLE
+#define HOST_SELECT(n) &none
+#define HOST_CLEAR &none
+#define HOST_CLEAR_ALL &none
+#define HOST_BLE &none
+#define SOFLE_SENSORS &rsr_vol
+#define SOFLE_SOFT_OFF &none
+#else
+#define HOST_SELECT(n) &bt BT_SEL n
+#define HOST_CLEAR &bt BT_CLR
+#define HOST_CLEAR_ALL &bt BT_CLR_ALL
+#define HOST_BLE &out OUT_BLE
+#define SOFLE_SENSORS &rsr_vol &rsr_trans
+#define SOFLE_SOFT_OFF &soft_off
+#endif
+
 &mmv_input_listener { input-processors = <&zip_xy_scaler 2 1>; };
 
 &msc_input_listener { input-processors = <&zip_scroll_scaler 2 1>; };
@@ -58,7 +74,7 @@
         compatible = "zmk,combos";
 
         softoff {
-            bindings = <&soft_off>;
+            bindings = <SOFLE_SOFT_OFF>;
             key-positions = <14 28 40>;
         };
     };
@@ -92,7 +108,7 @@
 &kp C_MUTE  &kp LCTRL  &kp LEFT_GUI  &kp LEFT_ALT  &mo 1   &kp SPACE    &kp ENTER        &kp SPACE  &kp ENTER  &mo 2      &kp RIGHT_SHIFT  &kp DELETE
             >;
 
-            sensor-bindings = <&rsr_vol &rsr_trans>;
+            sensor-bindings = <SOFLE_SENSORS>;
             display-name = "LAYER0";
         };
 
@@ -105,21 +121,21 @@
 &kp C_MUTE  &trans           &trans          &trans           &trans           &trans             &mkp LCLK        &trans           &trans           &trans      &trans     &trans
             >;
 
-            sensor-bindings = <&rsr_vol &rsr_trans>;
+            sensor-bindings = <SOFLE_SENSORS>;
             display-name = "LAYER1";
         };
 
         layer_2 {
             bindings = <
-&kp TILDE  &bt BT_SEL 0  &bt BT_SEL 1    &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &mmv MOVE_UP     &kp F6  &kp F7  &kp F8      &kp F9     &kp F10      &trans
-&trans     &bt BT_CLR    &bt BT_CLR_ALL  &trans        &trans        &trans          &mmv MOVE_DOWN   &trans  &trans  &kp F11     &kp F12    &kp UNDER    &kp PLUS
-&trans     &out OUT_USB  &out OUT_BLE    &trans        &trans        &trans          &mmv MOVE_LEFT   &trans  &trans  &trans      &trans     &kp LBRC     &kp RBRC
-&trans     &sys_reset    &trans          &bootloader   &trans        &trans          &mmv MOVE_RIGHT  &trans  &trans  &sys_reset  &soft_off  &bootloader  &trans
+&kp TILDE  HOST_SELECT(0) HOST_SELECT(1) HOST_SELECT(2) HOST_SELECT(3) HOST_SELECT(4) &mmv MOVE_UP     &kp F6  &kp F7  &kp F8      &kp F9     &kp F10      &trans
+&trans     HOST_CLEAR    HOST_CLEAR_ALL  &trans        &trans        &trans          &mmv MOVE_DOWN   &trans  &trans  &kp F11     &kp F12    &kp UNDER    &kp PLUS
+&trans     &out OUT_USB  HOST_BLE        &trans        &trans        &trans          &mmv MOVE_LEFT   &trans  &trans  &trans      &trans     &kp LBRC     &kp RBRC
+&trans     &sys_reset    &trans          &bootloader   &trans        &trans          &mmv MOVE_RIGHT  &trans  &trans  &sys_reset  SOFLE_SOFT_OFF &bootloader  &trans
 &trans     &trans        &trans          &trans        &trans        &trans          &mkp LCLK        &trans  &trans  &trans      &trans     &trans
             >;
 
             display-name = "LAYER2";
-            sensor-bindings = <&rsr_vol &rsr_trans>;
+            sensor-bindings = <SOFLE_SENSORS>;
         };
 
         layer_3 {
@@ -132,7 +148,7 @@
             >;
 
             display-name = "LAYER3";
-            sensor-bindings = <&rsr_vol &rsr_trans>;
+            sensor-bindings = <SOFLE_SENSORS>;
         };
 
         layer_4 {
@@ -145,7 +161,7 @@
             >;
 
             display-name = "LAYER4";
-            sensor-bindings = <&rsr_vol &rsr_trans>;
+            sensor-bindings = <SOFLE_SENSORS>;
         };
     };
 };

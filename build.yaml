@@ -8,3 +8,9 @@ include:
     shield: eyelash_sofle_right nice_view
   - board: nice_nano_v2
     shield: settings_reset
+  - board: nice_nano_v2
+    shield: eyelash_sofle_dongle_left nice_view
+  - board: nice_nano_v2
+    shield: eyelash_sofle_dongle_right nice_view
+  - board: seeeduino_xiao_ble
+    shield: sofle_dongle

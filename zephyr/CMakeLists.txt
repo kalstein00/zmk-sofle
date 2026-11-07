@@ -1,0 +1,5 @@
+if(CONFIG_SHIELD_SOFLE_DONGLE)
+  zephyr_library()
+  zephyr_library_sources(dongle_usb_only.c)
+  zephyr_ld_options(-Wl,--wrap=bt_le_adv_start)
+endif()
