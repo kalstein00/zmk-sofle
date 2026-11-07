@@ -3,7 +3,7 @@
 Run in PowerShell on Windows, from this repository. This builds the existing left Central, right Peripheral, and keyboard settings-reset firmware. It does not build dongle firmware. The steps below were checked with Python 3.12.10, west 1.5.0, CMake 3.27.9, Ninja 1.13.2 and Zephyr SDK 0.16.8. Git and Python 3.12 must be available on PATH; allow disk space and network access. Use a fresh workspace, outside this repository:
 
 ```powershell
-$repo = (Get-Location).Path
+$repo = (Get-Location).Path.Replace('\', '/')
 $ws = 'C:\temp\zmk-normal'
 $venv = 'C:\temp\zmk-normal-venv'
 $sdkRoot = 'C:\temp\zmk-sdk'
