@@ -27,7 +27,27 @@ Get-FileHash "$ws/dongle-left.uf2", "$ws/dongle-right.uf2", "$ws/dongle-central-
 2. 동글을 USB 호스트에 연결하고 왼쪽과 오른쪽을 차례로 켠다. 각각 연결된 후 대표 키를 입력해 확인한다. 한쪽만 연결한 경우와 다른 쪽을 나중에 켠 경우도 확인한다.
 3. 양쪽 문자, 수정키 누름과 해제, 레이어 전환, 마우스와 왼쪽 엔코더 양방향을 확인한다. 동글 모드의 기존 Bluetooth 호스트 선택·삭제와 BLE 출력 전환 위치는 무동작이다.
 
-기존 본딩 때문에 연결이 되지 않으면 저장된 설정 초기화가 필요할 수 있다. 초기화는 사용자 설정도 지울 수 있다. 완성된 복구 및 모드 전환 절차는 #8에서 다루며, 기존 일반 모드 설치와 초기화 빌드는 [Windows 빌드 안내](WINDOWS_BUILD.md)를 참고한다.
+기존 본딩이 없는 최초 설치에는 설정 초기화가 필요하지 않다. 연결 실패 시 장치 전원과 올바른 UF2를 먼저 확인하고, 필요할 때만 아래 복구를 수행한다. 일반 모드와의 전환 및 복구 실기 검증은 [#9](https://github.com/kalstein00/zmk-sofle/issues/9)에 남아 있다.
+
+## 동글 모드 연결 복구
+
+**설정 초기화는 실행한 장치의 저장 설정 전체와 BLE 본딩을 지운다.** 특히 동글에 저장한 DYA 키맵과 관련 사용자 설정도 삭제될 수 있다. 초기화 전에 DYA의 각 레이어 바인딩과 엔코더 등 필요한 설정을 기록한다. 완전한 내보내기·가져오기나 자동 백업·복원은 검증되지 않았다. 초기화 후 기록한 내용을 DYA에서 다시 입력하고 `Save`한다. 일반 모드 왼쪽의 설정은 동글에 자동 이전되지 않는다.
+
+1. 아래 빌드 명령으로 초기화 UF2를 준비한다. 실제 세 장치가 `nRF52840-nicenano` 부트로더로 식별된 경우 같은 `settings-reset-nicenano.uf2`를 사용한다. XIAO 대상은 실제 XIAO 보드에만 사용하며, 관찰된 nice!nano 동글에는 사용하지 않는다.
+2. 동글과 좌우를 한 번에 하나씩 부트로더에 넣고 식별을 확인한 후 각각 초기화 UF2를 복사한다. 복사 후 부트로더 드라이브가 사라지면 10초 기다려 초기화 실행 시간을 확보한다. 세 장치 모두 초기화가 끝날 때까지 일반 펌웨어를 다시 설치하지 않는다. 초기화 펌웨어는 BLE가 꺼져 있으며 일반 입력용이 아니다.
+3. 동글에 `dongle-central-nicenano.uf2`, 왼쪽에 `dongle-left.uf2`, 오른쪽에 `dongle-right.uf2`를 하나씩 다시 설치한다. 동글을 USB에 연결하고 좌우를 켜거나 리셋해 재페어링한다. 양쪽을 하나씩 연결해 각 슬롯과 입력을 확인한다.
+4. DYA에 동글 USB 직렬 포트로 연결해 기록한 설정을 복원하고 Save한다. 전원을 다시 연결해 저장된 키맵과 양쪽 입력을 확인한다.
+
+이번 통합 검증에서는 사용자 결정으로 설정 초기화를 수행하지 않았으므로 세 장치를 모두 초기화하고 재페어링하는 동글 모드 전체 복구와 본딩 없는 최초 설치는 실기 검증하지 않았다. 연결 실패의 원인을 본딩으로 단정하지 않는다.
+
+```powershell
+Set-Location $ws
+west build -p always -s zmk/app -d "$ws/build-reset-nicenano" -b nice_nano_v2 -- "-DZephyr_DIR=$zephyr" '-DSHIELD=settings_reset' "-DZMK_CONFIG=$repo/config" "-DZMK_EXTRA_MODULES=$repo" '-DCMAKE_C_FLAGS=-ULV_CONF_PATH'
+west build -p always -s zmk/app -d "$ws/build-reset-xiao" -b seeeduino_xiao_ble -- "-DZephyr_DIR=$zephyr" '-DSHIELD=settings_reset' "-DZMK_CONFIG=$repo/config" "-DZMK_EXTRA_MODULES=$repo" '-DCMAKE_C_FLAGS=-ULV_CONF_PATH'
+Copy-Item "$ws/build-reset-nicenano/zephyr/zmk.uf2" "$ws/settings-reset-nicenano.uf2"
+Copy-Item "$ws/build-reset-xiao/zephyr/zmk.uf2" "$ws/settings-reset-xiao.uf2"
+Get-FileHash "$ws/settings-reset-nicenano.uf2", "$ws/settings-reset-xiao.uf2" -Algorithm SHA256
+```
 
 
 ## 동글 화면
@@ -46,8 +66,8 @@ Q/S/Z를 동시에 2초 누르면 연결된 키보드가 깊은 절전에 들어
 
 | 기능 | 동글 구성 및 저장 계약 | 검증 상태 |
 | --- | --- | --- |
-| 키맵·레이어 | Studio USB RPC, 편집 즉시 적용, `Save`로 저장 | 최종 후보에서 키 편집·재연결과 LAYER1 편집·실제 입력 확인 |
-| 런타임 엔코더 | Studio RPC 활성화; 방향 설정은 선택 시 별도 저장 | 최종 후보에서 양 방향 편집·입력과 원래 음량 기능 복구 확인 |
+| 키맵·레이어 | Studio USB RPC, 편집 즉시 적용, `Save`로 저장 | 이전 #4 후보에서 키 편집·재연결과 LAYER1 편집·실제 입력 확인 |
+| 런타임 엔코더 | Studio RPC 활성화; 방향 설정은 선택 시 별도 저장 | 이전 #4 후보에서 양 방향 편집·입력과 원래 음량 기능 복구 확인 |
 | 런타임 input processor | Studio RPC 활성화 | 서브시스템 응답 확인; 장치에 processor 없음, 편집·저장 미검증 |
 | settings RPC | Studio RPC 활성화; idle/sleep 쓰기는 키맵 Save와 별개로 지연 저장 | 서브시스템 및 전원 설정 읽기 확인; 쓰기 제한은 아래 참고 |
 | BLE 호스트 관리 | USB 전용 동글에서 비활성 | 일반 모드 유지, 실기 회귀 미검증 |
@@ -56,3 +76,5 @@ Q/S/Z를 동시에 2초 누르면 연결된 키보드가 깊은 절전에 들어
 Studio BLE 연결과 동글의 Bluetooth 호스트 출력은 제공하지 않는다. 위의 확인 상태는 빌드 설정만으로 실기 동작을 보장하지 않는다.
 
 현재 동글 빌드에서는 sleep이 꺼져 있다. 고정된 settings RPC 구현은 idle을 먼저 변경한 뒤 sleep도 변경하려 하므로 요청이 실패해도 idle은 이미 적용되고 60초 뒤 저장될 수 있다. DYA에서 이 전원 설정 쓰기를 사용하지 말고, 실패 응답만으로 기존 값이 유지됐다고 가정하지 않는다. 이 경로의 편집·저장 및 Peripheral 전파는 실기에서 검증하지 않았다.
+
+최종 후보 빌드와 검증 범위는 [통합 빌드 기록](ISSUE8_BUILD_EVIDENCE.md)을 참고한다.

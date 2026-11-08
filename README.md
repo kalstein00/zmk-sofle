@@ -29,3 +29,5 @@
 
 ![Sofle键位图](keymap-drawer/eyelash_sofle.svg)
 
+
+동글 모드 Windows 빌드, 설치, DYA 및 복구 절차는 [동글 빌드와 설치](DONGLE_BUILD.md)를 참고한다.
