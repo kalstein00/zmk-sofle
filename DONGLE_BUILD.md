@@ -1,8 +1,8 @@
 # Sofle 동글 모드 빌드와 설치
 
-> 실기 확인: 사용 중인 동글의 부트로더는 nice!nano로 식별됐으며, 아래 XIAO 대상 빌드는 해당 장치에서 USB로 인식되지 않았다. nice!nano 대상의 별도 진단 빌드로 USB 및 왼쪽 `Q` 입력을 확인했다. 장치 식별, 한계와 실제 절차는 [왼쪽 설정 기록](LEFT_KEYBOARD_SETUP_RECORD.md)을 참고한다. 오른쪽은 [설정 계획](RIGHT_KEYBOARD_SETUP_PLAN.md)에 따라 아직 확인해야 한다.
+> 실기 확인: 사용 중인 동글의 부트로더는 nice!nano로 식별됐으며, 이전 XIAO 대상 빌드는 해당 장치에서 USB로 인식되지 않았다. nice!nano 대상 후보에서 양쪽 문자 입력과 DYA 연결을 확인했다. 장치 식별과 이전 시험의 한계는 [왼쪽 설정 기록](LEFT_KEYBOARD_SETUP_RECORD.md)과 [오른쪽 설정 기록](RIGHT_KEYBOARD_SETUP_RECORD.md)을 참고한다.
 
-동글 모드는 왼쪽과 오른쪽을 BLE Peripheral로, XIAO nRF52840을 USB Central로 사용한다. 일반 모드와 전환하려면 각 장치를 해당 모드의 펌웨어로 다시 플래시해야 한다. 동글은 키보드와 BLE로 통신하며, 컴퓨터로는 USB HID를 사용한다.
+동글 모드는 왼쪽과 오른쪽을 BLE Peripheral로, nice!nano 대상으로 식별된 동글을 USB Central로 사용한다. 일반 모드와 전환하려면 각 장치를 해당 모드의 펌웨어로 다시 플래시해야 한다. 동글은 키보드와 BLE로 통신하며, 컴퓨터로는 USB HID와 Studio 직렬 연결을 사용한다.
 
 ## Windows 네이티브 빌드
 
@@ -12,21 +12,36 @@
 Set-Location $ws
 west build -p always -s zmk/app -d "$ws/build-dongle-left" -b nice_nano_v2 -- "-DZephyr_DIR=$zephyr" '-DSHIELD=eyelash_sofle_dongle_left nice_view' "-DZMK_CONFIG=$repo/config" "-DZMK_EXTRA_MODULES=$repo" '-DCMAKE_C_FLAGS=-ULV_CONF_PATH'
 west build -p always -s zmk/app -d "$ws/build-dongle-right" -b nice_nano_v2 -- "-DZephyr_DIR=$zephyr" '-DSHIELD=eyelash_sofle_dongle_right nice_view' "-DZMK_CONFIG=$repo/config" "-DZMK_EXTRA_MODULES=$repo" '-DCMAKE_C_FLAGS=-ULV_CONF_PATH'
-west build -p always -s zmk/app -d "$ws/build-dongle-central" -b seeeduino_xiao_ble -- "-DZephyr_DIR=$zephyr" '-DSHIELD=sofle_dongle' "-DZMK_CONFIG=$repo/config" "-DZMK_EXTRA_MODULES=$repo" '-DCMAKE_C_FLAGS=-ULV_CONF_PATH'
+west build -p always -s zmk/app -d "$ws/build-dongle-central" -b nice_nano_v2 -- "-DZephyr_DIR=$zephyr" '-DSHIELD=sofle_dongle' "-DZMK_CONFIG=$repo/config" "-DZMK_EXTRA_MODULES=$repo" '-DCMAKE_C_FLAGS=-ULV_CONF_PATH' '-DSNIPPET=studio-rpc-usb-uart'
 Copy-Item "$ws/build-dongle-left/zephyr/zmk.uf2" "$ws/dongle-left.uf2"
 Copy-Item "$ws/build-dongle-right/zephyr/zmk.uf2" "$ws/dongle-right.uf2"
-Copy-Item "$ws/build-dongle-central/zephyr/zmk.uf2" "$ws/dongle-central-xiao.uf2"
-Get-FileHash "$ws/dongle-left.uf2", "$ws/dongle-right.uf2", "$ws/dongle-central-xiao.uf2" -Algorithm SHA256
+Copy-Item "$ws/build-dongle-central/zephyr/zmk.uf2" "$ws/dongle-central-nicenano.uf2"
+Get-FileHash "$ws/dongle-left.uf2", "$ws/dongle-right.uf2", "$ws/dongle-central-nicenano.uf2" -Algorithm SHA256
 ```
 
 빌드 로그에서 좌우 shield와 Central shield가 이 저장소에서 선택됐는지 확인한다. 컴파일 성공만으로 무선 통신이나 HID 동작이 확인되는 것은 아니다.
 
 ## 설치와 최초 연결
 
-1. 각 장치를 해당 부트로더 모드로 진입시킨 뒤 `dongle-left.uf2`는 왼쪽, `dongle-right.uf2`는 오른쪽, `dongle-central-xiao.uf2`는 XIAO 동글에 복사한다. 장치를 잘못 선택하지 않도록 부트로더 드라이브를 하나씩 연결한다.
+1. 각 장치를 해당 부트로더 모드로 진입시킨 뒤 `dongle-left.uf2`는 왼쪽, `dongle-right.uf2`는 오른쪽, `dongle-central-nicenano.uf2`는 부트로더가 `nRF52840-nicenano`로 식별되는 동글에 복사한다. 장치를 잘못 선택하지 않도록 부트로더 드라이브를 하나씩 연결한다.
 2. 동글을 USB 호스트에 연결하고 왼쪽과 오른쪽을 차례로 켠다. 각각 연결된 후 대표 키를 입력해 확인한다. 한쪽만 연결한 경우와 다른 쪽을 나중에 켠 경우도 확인한다.
 3. 양쪽 문자, 수정키 누름과 해제, 레이어 전환, 마우스와 왼쪽 엔코더 양방향을 확인한다. 동글 모드의 기존 Bluetooth 호스트 선택·삭제와 BLE 출력 전환 위치는 무동작이다.
 
-기존 본딩 때문에 연결이 되지 않으면 저장된 설정 초기화가 필요할 수 있다. 초기화는 사용자 설정도 지울 수 있다. 완성된 복구 및 모드 전환 절차는 #8에서 다루며, 기존 일반 모드 설치와 초기화 빌드는 [Windows 빌드 안내](WINDOWS_BUILD.md)를 참고한다. 동글 모드에서 기존 깊은 절전 바인딩은 동글 종료를 막기 위해 임시 무동작이며, 양쪽의 깊은 절전 및 복귀는 #7에서 다룬다. OLED 표시와 DYA 동작은 각각 #5, #4 범위다.
+기존 본딩 때문에 연결이 되지 않으면 저장된 설정 초기화가 필요할 수 있다. 초기화는 사용자 설정도 지울 수 있다. 완성된 복구 및 모드 전환 절차는 #8에서 다루며, 기존 일반 모드 설치와 초기화 빌드는 [Windows 빌드 안내](WINDOWS_BUILD.md)를 참고한다. 동글 모드에서 기존 깊은 절전 바인딩은 동글 종료를 막기 위해 임시 무동작이며, 양쪽의 깊은 절전 및 복귀는 #7에서 다룬다. OLED 표시는 #5 범위다.
 
-위 XIAO 대상 절차와 오른쪽 연결, 연결 해제·복귀 및 엔코더 동작은 실기에서 검증되지 않았다. 별도 nice!nano 동글 진단 후보를 사용한 왼쪽 `Q` 입력의 실기 결과는 왼쪽 설정 기록에 따로 남겼다.
+## DYA Studio
+
+[DYA Studio](https://studio.dya.cormoran.works/)에서 USB 연결을 선택하고 동글의 직렬 포트를 선택한다. 동글 모드의 설정은 동글에, 일반 모드의 설정은 왼쪽 Central에 저장되며 자동 이전되지 않는다. 키맵 편집은 즉시 적용되며 `Save`가 영구 저장이다. 시험 전 원래 바인딩을 기록하고 시험 후 복구한다. 설정 초기화는 별도 동의 없이 수행하지 않는다.
+
+| 기능 | 동글 구성 및 저장 계약 | 검증 상태 |
+| --- | --- | --- |
+| 키맵·레이어 | Studio USB RPC, 편집 즉시 적용, `Save`로 저장 | 최종 후보에서 키 편집·재연결과 LAYER1 편집·실제 입력 확인 |
+| 런타임 엔코더 | Studio RPC 활성화; 방향 설정은 선택 시 별도 저장 | 최종 후보에서 양 방향 편집·입력과 원래 음량 기능 복구 확인 |
+| 런타임 input processor | Studio RPC 활성화 | 서브시스템 응답 확인; 장치에 processor 없음, 편집·저장 미검증 |
+| settings RPC | Studio RPC 활성화; idle/sleep 쓰기는 키맵 Save와 별개로 지연 저장 | 서브시스템 및 전원 설정 읽기 확인; 쓰기 제한은 아래 참고 |
+| BLE 호스트 관리 | USB 전용 동글에서 비활성 | 일반 모드 유지, 실기 회귀 미검증 |
+| 배터리 이력 | 비활성 | 미지원 |
+
+Studio BLE 연결과 동글의 Bluetooth 호스트 출력은 제공하지 않는다. 위의 확인 상태는 빌드 설정만으로 실기 동작을 보장하지 않는다.
+
+현재 동글 빌드에서는 sleep이 꺼져 있다. 고정된 settings RPC 구현은 idle을 먼저 변경한 뒤 sleep도 변경하려 하므로 요청이 실패해도 idle은 이미 적용되고 60초 뒤 저장될 수 있다. DYA에서 이 전원 설정 쓰기를 사용하지 말고, 실패 응답만으로 기존 값이 유지됐다고 가정하지 않는다. 이 경로의 편집·저장 및 Peripheral 전파는 실기에서 검증하지 않았다.
