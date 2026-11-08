@@ -17,14 +17,12 @@
 #define HOST_CLEAR_ALL &none
 #define HOST_BLE &none
 #define SOFLE_SENSORS &rsr_vol
-#define SOFLE_SOFT_OFF &dongle_soft_off
 #else
 #define HOST_SELECT(n) &bt BT_SEL n
 #define HOST_CLEAR &bt BT_CLR
 #define HOST_CLEAR_ALL &bt BT_CLR_ALL
 #define HOST_BLE &out OUT_BLE
 #define SOFLE_SENSORS &rsr_vol &rsr_trans
-#define SOFLE_SOFT_OFF &soft_off
 #endif
 
 &mmv_input_listener { input-processors = <&zip_xy_scaler 2 1>; };
@@ -73,15 +71,6 @@
             compatible = "zmk,behavior-runtime-sensor-rotate";
             #sensor-binding-cells = <0>;
             tap-ms = <0>;
-        };
-    };
-
-    combos {
-        compatible = "zmk,combos";
-
-        softoff {
-            bindings = <SOFLE_SOFT_OFF>;
-            key-positions = <14 28 40>;
         };
     };
 
@@ -136,7 +125,7 @@
 &kp TILDE  HOST_SELECT(0) HOST_SELECT(1) HOST_SELECT(2) HOST_SELECT(3) HOST_SELECT(4) &mmv MOVE_UP     &kp F6  &kp F7  &kp F8      &kp F9     &kp F10      &trans
 &trans     HOST_CLEAR    HOST_CLEAR_ALL  &trans        &trans        &trans          &mmv MOVE_DOWN   &trans  &trans  &kp F11     &kp F12    &kp UNDER    &kp PLUS
 &trans     &out OUT_USB  HOST_BLE        &trans        &trans        &trans          &mmv MOVE_LEFT   &trans  &trans  &trans      &trans     &kp LBRC     &kp RBRC
-&trans     &sys_reset    &trans          &bootloader   &trans        &trans          &mmv MOVE_RIGHT  &trans  &trans  &sys_reset  SOFLE_SOFT_OFF &bootloader  &trans
+&trans     &sys_reset    &trans          &bootloader   &trans        &trans          &mmv MOVE_RIGHT  &trans  &trans  &sys_reset  &none       &bootloader  &trans
 &trans     &trans        &trans          &trans        &trans        &trans          &mkp LCLK        &trans  &trans  &trans      &trans     &trans
             >;
 

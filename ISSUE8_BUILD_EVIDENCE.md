@@ -16,7 +16,7 @@
 
 Python 3.12.10, west 1.5.0, CMake 3.27.9, Ninja 1.13.2.git.kitware.jobserver-pipe-1, Zephyr SDK 0.16.8; ZMK `4493783ef88ce2e653bf8217c92ee17140df71e3`, Zephyr `dacab4875df72109b96cc8977547a0dc04875bcd`. 나머지 고정 의존성은 [lock](requirements/west-active-lock.yml)과 위 west 목록을 확인한다.
 
-동글 좌우 및 Central의 해시는 #7에서 실제 검증한 후보와 같다. #7의 깊은 절전·복귀 관찰은 [#7 기록](https://github.com/kalstein00/zmk-sofle/issues/7#issuecomment-6721019614)에 있으며 배터리 알림 도착 시점은 미검증이다. 사용자의 명시적 결정으로 세 장치 설정 초기화는 수행하지 않으며 전체 동글 초기화 후 재페어링은 실기 미검증으로 남긴다. 기존 본딩이 없는 최초 설치도 미검증이다. 동일 후보에서 DYA 편집·저장부터 절전·복귀까지 아래 순차 실기 여정을 확인했다. 일반 모드 실기와 모드 전환은 [#9](https://github.com/kalstein00/zmk-sofle/issues/9)에서 검증한다. 빌드 성공만으로 실기 동작을 입증하지 않는다.
+동글 좌우 및 Central의 해시는 #7에서 실제 검증한 후보와 같다. #7의 Soft Off·복귀 관찰은 [#7 기록](https://github.com/kalstein00/zmk-sofle/issues/7#issuecomment-6721019614)에 있으며 배터리 알림 도착 시점은 미검증이다. 사용자의 명시적 결정으로 세 장치 설정 초기화는 수행하지 않으며 전체 동글 초기화 후 재페어링은 실기 미검증으로 남긴다. 기존 본딩이 없는 최초 설치도 미검증이다. 동일 후보에서 DYA 편집·저장부터 절전·복귀까지 아래 순차 실기 여정을 확인했다. 일반 모드 실기와 모드 전환은 [#9](https://github.com/kalstein00/zmk-sofle/issues/9)에서 검증한다. 빌드 성공만으로 실기 동작을 입증하지 않는다.
 
 
 | 기능 | 상태와 근거 |
@@ -25,12 +25,12 @@ Python 3.12.10, west 1.5.0, CMake 3.27.9, Ninja 1.13.2.git.kitware.jobserver-pip
 | 양쪽 입력·페어링 | #7과 동일한 3개 UF2에서 실제 양쪽 입력 및 재연결 확인. 전체 초기화 후 재페어링은 미검증. [#3](https://github.com/kalstein00/zmk-sofle/issues/3#issuecomment-6707478897), [#7](https://github.com/kalstein00/zmk-sofle/issues/7#issuecomment-6721019614). |
 | DYA 키맵·레이어·엔코더 | [#4](https://github.com/kalstein00/zmk-sofle/issues/4#issuecomment-6719994558) 이전 후보에서 실기 편집·입력·저장 확인. 최종 후보에서 Q→W 즉시 입력·Save·동글 USB 재연결 후 W 유지와 Q 복구·Save·입력 확인. settings RPC 쓰기 및 input processor 저장은 미검증. |
 | OLED·배터리·슬롯 | [#5](https://github.com/kalstein00/zmk-sofle/issues/5#issuecomment-6720598584) 이전 후보에서 사용자 화면 관찰. 0% 및 미수신은 호스트 시험, 실제 잔량과 독립 비교 미검증. 최종 후보에서 화면 및 복귀는 #7 실기 확인. |
-| 자동 절전 | [#6](https://github.com/kalstein00/zmk-sofle/issues/6#issuecomment-6720658066) 이전 후보에서 소등·키/엔코더 복귀 실기 확인. 최종 후보 순차 여정에서 소등과 키 입력·화면 복귀 확인. 배터리 알림의 복귀 전 도착 시점 미검증은 사용자 수용. |
-| 깊은 절전 | [#7](https://github.com/kalstein00/zmk-sofle/issues/7#issuecomment-6721019614)의 같은 3개 UF2에서 Q/S/Z, MO2+점, 양쪽 리셋 순서, 한쪽 연결 및 입력 복귀 확인. |
-| 복구·순차 통합 | 세 장치의 실제 초기화·재페어링과 최초 설치는 사용자 결정에 따라 미검증. DYA 편집 → 저장 → 전원 재연결 → OLED → 자동·깊은 절전 및 복귀는 아래와 같이 실기 확인. |
+| Idle | [#6](https://github.com/kalstein00/zmk-sofle/issues/6#issuecomment-6720658066) 이전 후보에서 소등·키/엔코더 복귀 실기 확인. 최종 후보 순차 여정에서 소등과 키 입력·화면 복귀 확인. 배터리 알림의 복귀 전 도착 시점 미검증은 사용자 수용. |
+| Soft Off | [#7](https://github.com/kalstein00/zmk-sofle/issues/7#issuecomment-6721019614)의 같은 3개 UF2에서 Q/S/Z, MO2+점, 양쪽 리셋 순서, 한쪽 연결 및 입력 복귀 확인. |
+| 복구·순차 통합 | 세 장치의 실제 초기화·재페어링과 최초 설치는 사용자 결정에 따라 미검증. DYA 편집 → 저장 → 전원 재연결 → OLED → Idle·Soft Off 및 복귀는 아래와 같이 실기 확인. |
 
 사진과 자동 E2E는 수행하지 않았으며 사용자 지시에 따라 실제 장치의 수동 관찰을 사용했다. 과거 후보와 최종 후보가 다른 항목은 과거 결과를 최종 후보 통과로 간주하지 않는다.
 
 ## 최종 후보 통합 실기 여정
 
-사용자가 DYA COM3에서 LAYER0의 물리 Q가 `q`임을 확인하고 `W`로 편집한 뒤 Save 전에 물리 Q에서 `w` 입력을 확인했다. Save 후 동글 USB를 뺐다 다시 연결해도 `w`가 입력됐으며, Q를 `q`로 되돌려 Save한 뒤 실제 `q` 입력을 확인했다. 이후 OLED 양 슬롯 잔량과 `USB: OK`, 입력 중단 후 자동 소등 및 키 입력과 화면 복귀를 확인했다. Q/S/Z를 2초 눌러 깊은 절전 후 좌우를 각각 리셋해 OLED와 양쪽 입력이 돌아왔다. 이 여정에서 깊은 절전 중 USB 유지의 별도 관찰은 없으며 동일 바이너리의 이전 [#7 PnP 확인](https://github.com/kalstein00/zmk-sofle/issues/7#issuecomment-6721019614)을 재사용한다. 이 여정은 설정 초기화나 새 본딩 상태를 포함하지 않았다. 자동 E2E와 사진은 사용자 수용에 따라 수행하지 않았고 사용자의 직접 관찰을 기록했다.
+사용자가 DYA COM3에서 LAYER0의 물리 Q가 `q`임을 확인하고 `W`로 편집한 뒤 Save 전에 물리 Q에서 `w` 입력을 확인했다. Save 후 동글 USB를 뺐다 다시 연결해도 `w`가 입력됐으며, Q를 `q`로 되돌려 Save한 뒤 실제 `q` 입력을 확인했다. 이후 OLED 양 슬롯 잔량과 `USB: OK`, 입력 중단 후 자동 소등 및 키 입력과 화면 복귀를 확인했다. Q/S/Z를 2초 눌러 Soft Off 후 좌우를 각각 리셋해 OLED와 양쪽 입력이 돌아왔다. 이 여정에서 Soft Off 중 USB 유지의 별도 관찰은 없으며 동일 바이너리의 이전 [#7 PnP 확인](https://github.com/kalstein00/zmk-sofle/issues/7#issuecomment-6721019614)을 재사용한다. 이 여정은 설정 초기화나 새 본딩 상태를 포함하지 않았다. 자동 E2E와 사진은 사용자 수용에 따라 수행하지 않았고 사용자의 직접 관찰을 기록했다.
