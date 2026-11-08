@@ -1,0 +1,3 @@
+description: Dongle peripheral-only soft off
+compatible: "zmk,behavior-dongle-soft-off"
+include: zero_param.yaml

@@ -17,7 +17,7 @@
 #define HOST_CLEAR_ALL &none
 #define HOST_BLE &none
 #define SOFLE_SENSORS &rsr_vol
-#define SOFLE_SOFT_OFF &none
+#define SOFLE_SOFT_OFF &dongle_soft_off
 #else
 #define HOST_SELECT(n) &bt BT_SEL n
 #define HOST_CLEAR &bt BT_CLR
@@ -55,6 +55,12 @@
     };
 
     behaviors {
+#ifdef SOFLE_DONGLE
+        dongle_soft_off: dongle_soft_off {
+            compatible = "zmk,behavior-dongle-soft-off";
+            #binding-cells = <0>;
+        };
+#endif
         rsr_vol: rsr_vol {
             compatible = "zmk,behavior-runtime-sensor-rotate";
             #sensor-binding-cells = <0>;
