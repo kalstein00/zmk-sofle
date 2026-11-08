@@ -1,0 +1,40 @@
+/* Harness for the two functions extracted verbatim from the generated ZMK central. */
+#include <stdio.h>
+#include <stdint.h>
+#include "../../zephyr/dongle_battery_snapshot.h"
+#define LOG_ERR(...) ((void)0)
+#define LOG_DBG(...) ((void)0)
+#define BT_GATT_ITER_CONTINUE 1
+#define BT_GATT_ITER_STOP 0
+#define K_NO_WAIT 0
+#define ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT 7
+struct bt_gatt_subscribe_params { uint16_t value_handle; };
+struct bt_gatt_read_params { int unused; };
+struct peripheral_slot { int unused; };
+struct peripheral_event_wrapper { int source; struct { int type; union { struct { uint8_t level; } battery_event; } data; } event; };
+static struct peripheral_slot slot;
+static struct bt_conn *current_conn;
+static int peripheral_event_msgq, peripheral_event_work;
+static struct peripheral_slot *peripheral_slot_for_conn(struct bt_conn *c) { return c == current_conn ? &slot : NULL; }
+static int peripheral_slot_index_for_conn(struct bt_conn *c) { return c == current_conn ? 0 : -1; }
+static int k_msgq_put(void *q, const void *v, int t) { (void)q; (void)v; (void)t; return 0; }
+static int k_work_submit(void *w) { (void)w; return 0; }
+/* CALLBACKS */
+int main(void) {
+    struct bt_conn c = {1};
+    struct bt_gatt_subscribe_params sub = {1};
+    struct bt_gatt_read_params read = {0};
+    uint8_t zero = 0;
+    current_conn = &c;
+    dongle_battery_connect(0, &c);
+    split_central_battery_level_read_func(&c, 0, &read, &zero, 1);
+    struct dongle_slot_state s = dongle_battery_get(0);
+    if (!s.connected || !s.received || s.level != 0) { puts("FAIL: BAS read zero"); return 1; }
+    dongle_battery_disconnect(0, &c);
+    dongle_battery_connect(0, &c);
+    split_central_battery_level_notify_func(&c, &sub, &zero, 1);
+    s = dongle_battery_get(0);
+    if (!s.connected || !s.received || s.level != 0) { puts("FAIL: BAS notification zero"); return 1; }
+    puts("PASS: ZMK BAS read and notification callbacks retain valid zero");
+    return 0;
+}

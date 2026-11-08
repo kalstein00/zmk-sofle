@@ -4,3 +4,5 @@ modules/
 tools/
 .west/
 .omo
+!tests/dongle-display/stubs/zmk/
+!tests/dongle-display/stubs/zmk/ble.h
