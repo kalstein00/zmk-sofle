@@ -33,3 +33,7 @@
 
 
 동글 모드 Windows 빌드, 설치, DYA 및 복구 절차는 [동글 빌드와 설치](DONGLE_BUILD.md)를 참고한다.
+
+## 펌웨어 릴리즈
+
+릴리즈할 때는 저장소 전용 [`$sofle-release`](.agents/skills/sofle-release/SKILL.md) 스킬을 사용한다. 같은 소스 버전의 동글·왼쪽 키보드·오른쪽 키보드 UF2 세 개와 SHA-256 체크섬을 함께 준비한다.
