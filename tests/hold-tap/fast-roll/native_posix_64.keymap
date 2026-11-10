@@ -1,0 +1,29 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../../../config/hold_tap.dtsi"
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <&mt LCTRL D &kp M>;
+        };
+    };
+};
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(0,0,300)
+        ZMK_MOCK_PRESS(0,0,250)
+        ZMK_MOCK_PRESS(0,1,20)
+        ZMK_MOCK_RELEASE(0,1,20)
+        ZMK_MOCK_RELEASE(0,0,300)
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+    >;
+};

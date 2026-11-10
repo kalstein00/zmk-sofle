@@ -23,6 +23,15 @@ replace('''                bool pressed = slot->position_state[i] & BIT(j);
                 struct peripheral_event_wrapper ev = {''', '''                bool pressed = slot->position_state[i] & BIT(j);
                 if (pressed) dongle_sleep_input_received(peripheral_slot_index_for_conn(conn), conn);
                 struct peripheral_event_wrapper ev = {''')
+replace('''        zmk_split_transport_central_peripheral_event_handler(&bt_central, ev.source, ev.event);
+''', '''        zmk_split_transport_central_peripheral_event_handler(&bt_central, ev.source, ev.event);
+        if (ev.source < ZMK_SPLIT_BLE_PERIPHERAL_COUNT &&
+            ev.event.type == ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_KEY_POSITION_EVENT &&
+            ev.event.data.key_position_event.pressed) {
+            dongle_battery_position(ev.source, peripherals[ev.source].conn,
+                                    ev.event.data.key_position_event.position);
+        }
+''')
 replace('    confirm_peripheral_slot_conn(conn);\n    split_central_process_connection(conn);', '    confirm_peripheral_slot_conn(conn);\n    dongle_battery_connect(peripheral_slot_index_for_conn(conn), conn);\n    dongle_sleep_connection(peripheral_slot_index_for_conn(conn), conn, true);\n    split_central_process_connection(conn);')
 replace('    err = release_peripheral_slot_for_conn(conn);', '    dongle_battery_disconnect(peripheral_slot_index_for_conn(conn), conn);\n    dongle_sleep_connection(peripheral_slot_index_for_conn(conn), conn, false);\n    err = release_peripheral_slot_for_conn(conn);')
 replace('void split_central_split_run_callback(struct k_work *work) {', '''static bool dongle_sleep_command(struct central_cmd_wrapper *p) {

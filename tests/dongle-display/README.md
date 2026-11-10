@@ -18,3 +18,7 @@ rm tests/dongle-display/callback_test.generated.c
 ```
 
 This checks zero through the actual callback bodies and the snapshot adapter with mocked GATT and queue boundaries. It does not validate radio delivery, scheduling, or peripheral identity.
+
+## OLED simulator
+
+With a C compiler and the pinned LVGL source, run `LVGL_DIR=/path/to/modules/lib/gui/lvgl bash tests/dongle-display/simulator/run.sh /path/to/output.ppm`. The harness renders the actual `dongle_display.c` with a 128×64, one-bit LVGL display, deterministic fake battery and USB data, and emits additional 20%, 21%, blinking and typing frames. It does not exercise Zephyr scheduling, BLE, I²C, or the physical display.

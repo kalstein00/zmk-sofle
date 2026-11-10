@@ -9,6 +9,9 @@ int main(void) {
     dongle_battery_sample(1, &b, 89);
     CHECK(dongle_battery_get(0).received && dongle_battery_get(0).level == 0, "zero is valid");
     CHECK(dongle_battery_get(1).received && dongle_battery_get(1).level == 89, "independent slot");
+    dongle_battery_position(0, &a, 20);
+    dongle_battery_position(1, &b, 14);
+    CHECK(dongle_battery_get(0).side == DONGLE_SIDE_RIGHT && dongle_battery_get(1).side == DONGLE_SIDE_LEFT, "side follows key position, not slot order");
     dongle_battery_disconnect(0, &a);
     CHECK(!dongle_battery_get(0).connected && !dongle_battery_get(0).received, "disconnect clears reading");
     dongle_battery_connect(0, &c);

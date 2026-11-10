@@ -1,0 +1,13 @@
+// Shared by the keyboard and the hold-tap behavior test.
+&mt {
+    // Favor typing for home-row modifiers; retain the Vial timing.
+    flavor = "tap-preferred";
+    tapping-term-ms = <170>;
+    quick-tap-ms = <0>;
+};
+
+&lt {
+    flavor = "balanced";
+    tapping-term-ms = <170>;
+    quick-tap-ms = <0>;
+};

@@ -3,6 +3,7 @@
 #include "dongle_battery_snapshot.h"
 static struct dongle_slot_state slots[ZMK_SPLIT_BLE_PERIPHERAL_COUNT];
 static struct k_spinlock lock;
+static uint32_t key_activity;
 static bool valid(int n) { return n >= 0 && n < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; }
 void dongle_battery_connect(int n, struct bt_conn *conn) {
     if (!valid(n)) return;
@@ -21,6 +22,19 @@ void dongle_battery_sample(int n, struct bt_conn *conn, uint8_t level) {
     k_spinlock_key_t key = k_spin_lock(&lock);
     dongle_slot_battery(&slots[n], (uintptr_t)conn, level);
     k_spin_unlock(&lock, key);
+}
+void dongle_battery_position(int n, struct bt_conn *conn, uint32_t position) {
+    if (!valid(n)) return;
+    k_spinlock_key_t key = k_spin_lock(&lock);
+    dongle_slot_position(&slots[n], (uintptr_t)conn, position);
+    if (slots[n].connected && slots[n].connection == (uintptr_t)conn && position < 64) ++key_activity;
+    k_spin_unlock(&lock, key);
+}
+uint32_t dongle_key_activity(void) {
+    k_spinlock_key_t key = k_spin_lock(&lock);
+    uint32_t result = key_activity;
+    k_spin_unlock(&lock, key);
+    return result;
 }
 struct dongle_slot_state dongle_battery_get(unsigned n) {
     struct dongle_slot_state result = {0};

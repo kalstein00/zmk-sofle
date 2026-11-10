@@ -43,6 +43,8 @@
 
 &soft_off { hold-time-ms = <2000>; };
 
+#include "hold_tap.dtsi"
+
 / {
     scroll_encoder: scroll_encoder {
         compatible = "zmk,behavior-sensor-rotate";
