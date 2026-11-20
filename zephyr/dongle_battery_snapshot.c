@@ -1,6 +1,7 @@
 #include <zephyr/kernel.h>
 #include <zmk/ble.h>
 #include "dongle_battery_snapshot.h"
+#include "dongle_log.h"
 static struct dongle_slot_state slots[ZMK_SPLIT_BLE_PERIPHERAL_COUNT];
 static struct k_spinlock lock;
 static uint32_t key_activity;
@@ -26,9 +27,18 @@ void dongle_battery_sample(int n, struct bt_conn *conn, uint8_t level) {
 void dongle_battery_position(int n, struct bt_conn *conn, uint32_t position) {
     if (!valid(n)) return;
     k_spinlock_key_t key = k_spin_lock(&lock);
+#ifdef CONFIG_SHIELD_SOFLE_DONGLE_WIRELESS
+    enum dongle_side previous = slots[n].side;
+#endif
     dongle_slot_position(&slots[n], (uintptr_t)conn, position);
     if (slots[n].connected && slots[n].connection == (uintptr_t)conn && position < 64) ++key_activity;
+#ifdef CONFIG_SHIELD_SOFLE_DONGLE_WIRELESS
+    enum dongle_side side = slots[n].side;
+#endif
     k_spin_unlock(&lock, key);
+#ifdef CONFIG_SHIELD_SOFLE_DONGLE_WIRELESS
+    if (previous != side) dongle_log_note(DONGLE_LOG_SPLIT_SIDE, n, side);
+#endif
 }
 uint32_t dongle_key_activity(void) {
     k_spinlock_key_t key = k_spin_lock(&lock);

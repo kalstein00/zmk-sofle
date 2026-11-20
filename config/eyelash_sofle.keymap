@@ -11,7 +11,7 @@
 #include <dt-bindings/zmk/pointing.h>
 #include <dt-bindings/zmk/rgb.h>
 
-#ifdef SOFLE_DONGLE
+#if defined(SOFLE_DONGLE) && !defined(SOFLE_DONGLE_WIRELESS)
 #define HOST_SELECT(n) &none
 #define HOST_CLEAR &none
 #define HOST_CLEAR_ALL &none
@@ -23,6 +23,24 @@
 #define HOST_CLEAR_ALL &bt BT_CLR_ALL
 #define HOST_BLE &out OUT_BLE
 #define SOFLE_SENSORS &rsr_vol &rsr_trans
+#endif
+
+#ifdef SOFLE_DONGLE_WIRELESS
+#undef SOFLE_SENSORS
+#define SOFLE_SENSORS &rsr_vol
+#undef HOST_CLEAR
+#undef HOST_CLEAR_ALL
+#define HOST_CLEAR &host_clear 0
+#define HOST_CLEAR_ALL &host_clear 1
+#define HOST_FIFTH &bt BT_NXT
+#define HOST_PREVIOUS &bt BT_PRV
+#define HOST_MENU &host_menu
+#define HOST_DOT &trans
+#else
+#define HOST_FIFTH HOST_SELECT(4)
+#define HOST_PREVIOUS &trans
+#define HOST_MENU &trans
+#define HOST_DOT &none
 #endif
 
 &mmv_input_listener { input-processors = <&zip_xy_scaler 2 1>; };
@@ -55,6 +73,16 @@
     };
 
     behaviors {
+#ifdef SOFLE_DONGLE_WIRELESS
+        host_clear: host_clear {
+            compatible = "zmk,behavior-host-clear";
+            #binding-cells = <1>;
+        };
+        host_menu: host_menu {
+            compatible = "zmk,behavior-host-menu";
+            #binding-cells = <0>;
+        };
+#endif
 #ifdef SOFLE_DONGLE
         dongle_soft_off: dongle_soft_off {
             compatible = "zmk,behavior-dongle-soft-off";
@@ -124,11 +152,11 @@
 
         layer_2 {
             bindings = <
-&kp TILDE  HOST_SELECT(0) HOST_SELECT(1) HOST_SELECT(2) HOST_SELECT(3) HOST_SELECT(4) &mmv MOVE_UP     &kp F6  &kp F7  &kp F8      &kp F9     &kp F10      &trans
-&trans     HOST_CLEAR    HOST_CLEAR_ALL  &trans        &trans        &trans          &mmv MOVE_DOWN   &trans  &trans  &kp F11     &kp F12    &kp UNDER    &kp PLUS
+&kp TILDE  HOST_SELECT(0) HOST_SELECT(1) HOST_SELECT(2) HOST_SELECT(3) HOST_FIFTH     &mmv MOVE_UP     &kp F6  &kp F7  &kp F8      &kp F9     &kp F10      &trans
+&trans     HOST_CLEAR    HOST_CLEAR_ALL  HOST_PREVIOUS &trans        &trans          &mmv MOVE_DOWN   &trans  &trans  &kp F11     &kp F12    &kp UNDER    &kp PLUS
 &trans     &out OUT_USB  HOST_BLE        &trans        &trans        &trans          &mmv MOVE_LEFT   &trans  &trans  &trans      &trans     &kp LBRC     &kp RBRC
-&trans     &sys_reset    &trans          &bootloader   &trans        &trans          &mmv MOVE_RIGHT  &trans  &trans  &sys_reset  &none       &bootloader  &trans
-&trans     &trans        &trans          &trans        &trans        &trans          &mkp LCLK        &trans  &trans  &trans      &trans     &trans
+&trans     &sys_reset    &trans          &bootloader   &trans        &trans          &mmv MOVE_RIGHT  &trans  &trans  &sys_reset  HOST_DOT    &bootloader  &trans
+&trans     &trans        &trans          &trans        &trans        &trans          &mkp LCLK        HOST_MENU &trans &trans     &trans     &trans
             >;
 
             display-name = "LAYER2";

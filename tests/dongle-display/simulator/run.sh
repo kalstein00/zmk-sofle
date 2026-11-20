@@ -6,7 +6,7 @@ out=${1:?Provide an output PPM path}
 shift
 build=$(mktemp -d)
 trap 'rm -rf "$build"' EXIT
-find "$lvgl/src" -name '*.c' -print0 | xargs -0 gcc -std=c11 -O0 \
+find "$lvgl/src" -name '*.c' -print0 | xargs -0 gcc -std=c11 -O0 ${SOFLE_DISPLAY_FLAGS:-} \
   -I"$root/tests/dongle-display/simulator" -I"$root/tests/dongle-display/simulator/include" \
   -I"$root/zephyr" -I"$lvgl" -DLV_CONF_INCLUDE_SIMPLE \
   "$root/tests/dongle-display/simulator/main.c" "$root/zephyr/dongle_display.c" \
