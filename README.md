@@ -7,9 +7,10 @@
 | 모드 | 구성 | 컴퓨터 연결 |
 | --- | --- | --- |
 | 일반 모드 | 왼쪽 키보드가 Central, 오른쪽 키보드가 BLE Peripheral | 왼쪽 키보드의 USB 또는 Bluetooth |
-| 동글 모드 | OLED 동글이 Central, 양쪽 키보드가 BLE Peripheral | 동글의 USB |
+| USB 전용 동글 모드 | OLED 동글이 Central, 양쪽 키보드가 BLE Peripheral | 동글의 USB |
+| 무선 동글 모드 | OLED 동글이 Central, 양쪽 키보드가 BLE Peripheral | 동글의 USB 또는 선택한 PC 프로필의 Bluetooth |
 
-모드를 바꾸려면 각 장치에 해당 모드의 펌웨어를 설치해야 합니다. 동글 모드에서는 컴퓨터로 Bluetooth 출력을 제공하지 않습니다. 자세한 구성과 복구 방법은 [동글 빌드와 설치](DONGLE_BUILD.md)를 참고하세요.
+일반 모드와 동글 모드를 오갈 때는 각 장치에 해당 펌웨어를 설치합니다. USB 전용 동글과 무선 동글 사이를 전환할 때는 동글의 UF2를 교체합니다. 자세한 구성과 복구 방법은 [동글 빌드와 설치](DONGLE_BUILD.md)를 참고하세요.
 
 ## 펌웨어 설치
 

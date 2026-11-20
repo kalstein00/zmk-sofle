@@ -1,0 +1,3 @@
+#define SOFLE_DONGLE
+#define SOFLE_DONGLE_WIRELESS
+#include "eyelash_sofle.keymap"

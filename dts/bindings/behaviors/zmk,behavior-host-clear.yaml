@@ -1,0 +1,3 @@
+description: Hold for two seconds to clear only PC host bonds
+compatible: "zmk,behavior-host-clear"
+include: one_param.yaml

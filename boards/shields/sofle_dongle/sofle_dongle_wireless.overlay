@@ -1,0 +1,7 @@
+#include "sofle_dongle.overlay"
+
+&zephyr_udc0 {
+    sofle_log_uart: sofle_log_uart {
+        compatible = "zephyr,cdc-acm-uart";
+    };
+};
