@@ -33,6 +33,12 @@ manifest:
   - name: zmk-module-runtime-input-processor
     url: https://github.com/cormoran/zmk-module-runtime-input-processor
     revision: dbf92f764de8b6ffd60bf5850514302875fe2570
+  - name: zmk-feature-custom-settings
+    url: https://github.com/cormoran/zmk-feature-custom-settings
+    revision: e3f397b8dd1e58fa1af011493f2cb4b43fd67804
+  - name: zmk-feature-runtime-combo
+    url: https://github.com/cormoran/zmk-feature-runtime-combo
+    revision: b067f7c2c3aea609fd2d6a9fb00ffe73e2586893
   - name: acpica
     url: https://github.com/zephyrproject-rtos/acpica
     revision: 0333c2af13179f9b33d495cf7cb9a509f751cbb1

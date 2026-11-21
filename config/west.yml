@@ -54,5 +54,12 @@ manifest:
     - name: zmk-module-runtime-input-processor
       remote: cormoran
       revision: dbf92f764de8b6ffd60bf5850514302875fe2570
+    # Keep the pre-P4 settings layout for the pinned Zephyr 3.5 linker and Kconfig.
+    - name: zmk-feature-custom-settings
+      remote: cormoran
+      revision: e3f397b8dd1e58fa1af011493f2cb4b43fd67804
+    - name: zmk-feature-runtime-combo
+      remote: cormoran
+      revision: b067f7c2c3aea609fd2d6a9fb00ffe73e2586893
   self:
     path: config
