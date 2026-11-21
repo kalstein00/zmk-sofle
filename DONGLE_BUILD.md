@@ -171,6 +171,8 @@ Studio는 두 동글 모드에서 USB 직렬로 연결한다. PC에 Bluetooth로
 
 Runtime Combo를 포함한 펌웨어를 설치한 무선 동글에 연결한 뒤, DYA Studio의 **Macro&Combo → Combos**에서 `+`로 콤보를 추가한다. 키보드 미리보기에서 두 개 이상의 키를 고르고 실행할 동작을 지정한 다음 `Save`를 누른다. 추가한 콤보를 삭제할 때는 해당 항목을 열어 `Delete`를 누른 뒤 `Save`를 누른다.
 
+런타임 콤보, OLED, BLE 재탐색을 변경할 때는 [무선 동글 회귀 기록](docs/wireless-dongle-regressions.md)에서 원인과 실기 재현 방법을 확인할 수 있다.
+
 현재 동글 빌드에서는 sleep이 꺼져 있다. 고정된 settings RPC 구현은 idle을 먼저 변경한 뒤 sleep도 변경하려 하므로 요청이 실패해도 idle은 이미 적용되고 60초 뒤 저장될 수 있다. DYA에서 이 전원 설정 쓰기를 사용하지 말고, 실패 응답만으로 기존 값이 유지됐다고 가정하지 않는다. 이 경로의 편집·저장 및 Peripheral 전파는 실기에서 검증하지 않았다.
 
 최종 후보 빌드와 검증 범위는 [통합 빌드 기록](ISSUE8_BUILD_EVIDENCE.md)을 참고한다.
